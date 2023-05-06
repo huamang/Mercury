@@ -1,5 +1,12 @@
 # Mercury
-一个成长中的扫描器，暂时只有scan模式，后续也不一定会开源其他模式哈哈哈
+一个成长中的扫描器，暂时只有scan模式
+
+## 安装
+```
+git clone https://github.com/huamang/Mercury.git
+cd Mercury/cmd
+go build -o Mercury
+```
 
 ## 用法
 
