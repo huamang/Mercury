@@ -48,7 +48,13 @@ OPTIONS:
    --help, -h                show help
 ```
 
+普通扫描模式
 
+![image-20230507053905372](https://tuchuang.huamang.xyz/img/image-20230507053905372.png)
+
+ICMP监听扫描模式，需要高权限
+
+![image-20230507053927090](https://tuchuang.huamang.xyz/img/image-20230507053927090.png)
 
 ## 免责声明
 
