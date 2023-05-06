@@ -9,7 +9,7 @@ import (
 func Parse() {
 	app := &cli.App{
 		Name:    "Mercury",
-		Usage:   "A interesting scanner",
+		Usage:   "A scanner",
 		Version: "v1.0",
 		Action: func(context *cli.Context) error {
 			cli.ShowAppHelp(context)
@@ -60,7 +60,6 @@ func Parse() {
 					},
 				},
 				Action: func(context *cli.Context) error {
-					os.Exit(0)
 					return nil
 				},
 			},
