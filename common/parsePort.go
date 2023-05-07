@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func ParsePort(ports string) (scanPorts []int) {
+func ParsePort(ports string) (scanPorts []string) {
 	if ports == "" {
 		return
 	}
@@ -35,21 +35,9 @@ func ParsePort(ports string) (scanPorts []int) {
 		start, _ := strconv.Atoi(port)
 		end, _ := strconv.Atoi(upper)
 		for i := start; i <= end; i++ {
-			scanPorts = append(scanPorts, i)
+			scanPorts = append(scanPorts, strconv.Itoa(i))
 		}
 	}
-	scanPorts = removeDuplicate(scanPorts)
+	scanPorts = RemoveDuplicate(scanPorts)
 	return scanPorts
-}
-
-func removeDuplicate(old []int) []int {
-	result := []int{}
-	temp := map[int]struct{}{}
-	for _, item := range old {
-		if _, ok := temp[item]; !ok {
-			temp[item] = struct{}{}
-			result = append(result, item)
-		}
-	}
-	return result
 }

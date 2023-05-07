@@ -3,6 +3,7 @@ module Mercury
 go 1.20
 
 require (
+	github.com/sirupsen/logrus v1.9.0
 	github.com/urfave/cli/v2 v2.25.3
 	golang.org/x/net v0.9.0
 )

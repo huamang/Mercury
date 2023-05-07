@@ -16,6 +16,21 @@ func Parse() {
 			os.Exit(0)
 			return nil
 		},
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:        "output",
+				Aliases:     []string{"o"},
+				Usage:       "output file",
+				Destination: &Output,
+			},
+			&cli.BoolFlag{
+				Name:        "debug",
+				Usage:       "debug mode",
+				Value:       false,
+				Destination: &Debug,
+			},
+		},
+
 		Commands: []*cli.Command{
 			{
 				Name:  "scan",

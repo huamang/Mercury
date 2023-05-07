@@ -4,6 +4,7 @@ import (
 	"Mercury/common"
 	"bytes"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv4"
 	"net"
@@ -41,6 +42,10 @@ func pingCheck(hosts []string) {
 		go func(host string) {
 			if ExecCommandPing(host) {
 				resHosts = append(resHosts, host)
+				logrus.WithFields(logrus.Fields{
+					"target": host,
+					"status": "Alive",
+				}).Info("Ping mode check alive")
 			}
 			<-limiter
 			wg.Done()
@@ -92,6 +97,10 @@ func RunIcmp1(hosts []string, conn *icmp.PacketConn) {
 			_, sourceIP, _ := conn.ReadFrom(resMsg)
 			if sourceIP != nil {
 				resHosts = append(resHosts, sourceIP.String())
+				logrus.WithFields(logrus.Fields{
+					"target": sourceIP.String(),
+					"status": "Alive",
+				}).Info("ICMP mode check alive")
 			}
 		}
 	}()
@@ -158,8 +167,7 @@ func ExecCommandPing(host string) bool {
 			return true
 		}
 	} else {
-		fmt.Println("[-] 不支持的操作系统")
-		os.Exit(1)
+		logrus.Fatal("不支持的操作系统")
 	}
 	return false
 }

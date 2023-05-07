@@ -3,6 +3,7 @@ package common
 import (
 	"bufio"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"log"
 	"net"
 	"os"
@@ -20,7 +21,8 @@ func ParseIP(host string, filename string) (hosts []string, err error) {
 	}
 	// 从命令行参数中读取
 	hosts = ParseIPs(host)
-	return hosts, nil
+	// 去重返回
+	return RemoveDuplicate(hosts), nil
 }
 
 func ParseIPs(ip string) (hosts []string) {
@@ -51,8 +53,10 @@ func ParseIPs(ip string) (hosts []string) {
 func ParseIPCIDR(host string) (hosts []string) {
 	ip, ipNet, err := net.ParseCIDR(host)
 	if err != nil {
-		fmt.Println("Invalid IP address:", err)
-		os.Exit(1)
+		logrus.WithFields(logrus.Fields{
+			"host": host,
+			"err":  err,
+		}).Fatal("Invalid CIDR address")
 	}
 
 	for ip = ip.Mask(ipNet.Mask); ipNet.Contains(ip); inc(ip) {
@@ -111,8 +115,10 @@ func parseIP2(host string) (hosts []string) {
 	for _, ipStr := range ipList {
 		ip := net.ParseIP(strings.TrimSpace(ipStr))
 		if ip == nil {
-			fmt.Println("Invalid IP address:", ipStr)
-			os.Exit(1)
+			logrus.WithFields(logrus.Fields{
+				"host": host,
+				"err":  fmt.Sprintf("Invalid IP address: %s", ipStr),
+			}).Fatal("Invalid IP address")
 		}
 
 		hosts = append(hosts, ip.String())
@@ -147,4 +153,17 @@ func inc(ip net.IP) {
 			break
 		}
 	}
+}
+
+// RemoveDuplicate 去重
+func RemoveDuplicate(old []string) []string {
+	result := []string{}
+	temp := map[string]struct{}{}
+	for _, item := range old {
+		if _, ok := temp[item]; !ok {
+			temp[item] = struct{}{}
+			result = append(result, item)
+		}
+	}
+	return result
 }

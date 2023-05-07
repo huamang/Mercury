@@ -9,7 +9,8 @@ import (
 
 func main() {
 	start := time.Now()
-	common.Parse()
+	// 初始化日志与配置
+	common.Init()
 	engine.Scan()
 	end := time.Now().Sub(start)
 	fmt.Printf("[*] Spend time: %s\n", end)
