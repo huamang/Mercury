@@ -1,5 +1,5 @@
 # Mercury
-一个成长中的扫描器，暂时只有scan模式
+一个高并发内网扫描器，用于内网资产绘测
 
 ## 安装
 ```
@@ -12,7 +12,7 @@ go build -o Mercury
 
 ```
 NAME:
-   Mercury - A interesting scanner
+   Mercury - A scanner
 
 USAGE:
    Mercury [global options] command [command options] [arguments...]
@@ -25,8 +25,10 @@ COMMANDS:
    help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --help, -h     show help
-   --version, -v  print the version
+   --output value, -o value  output file
+   --debug                   debug mode (default: false)
+   --help, -h                show help
+   --version, -v             print the version
 ```
 
 scan模式
@@ -48,13 +50,9 @@ OPTIONS:
    --help, -h                show help
 ```
 
-普通扫描模式
+![image-20230507221531214](https://tuchuang.huamang.xyz/img/image-20230507221531214.png)
 
-![image-20230507053905372](https://tuchuang.huamang.xyz/img/image-20230507053905372.png)
 
-ICMP监听扫描模式，需要高权限
-
-![image-20230507053927090](https://tuchuang.huamang.xyz/img/image-20230507053927090.png)
 
 ## 免责声明
 
