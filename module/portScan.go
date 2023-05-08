@@ -27,14 +27,18 @@ func PortScan(hosts []string) []ScanTask {
 	}
 
 	// 创建channel
-	Addrs := make(chan string, len(hosts)*len(ports))
+	Addrs := make(chan ScanTask, len(hosts)*len(ports))
 	defer close(Addrs)
 
 	// 添加扫描目标进入channel
 	for _, port := range ports {
 		for _, host := range hosts {
 			wg.Add(1)
-			Addrs <- fmt.Sprintf("%s:%s", host, port)
+			Addrs <- ScanTask{
+				Addr: fmt.Sprintf("%s:%s", host, port),
+				Host: host,
+				Port: port,
+			}
 		}
 	}
 
@@ -43,10 +47,12 @@ func PortScan(hosts []string) []ScanTask {
 		go func() {
 			for task := range Addrs {
 				scanTask := ScanPort(task)
-				lock.Lock()
-				scanTasks = append(scanTasks, scanTask)
-				lock.Unlock()
-				wg.Done()
+				if scanTask.Addr != "" {
+					lock.Lock()
+					scanTasks = append(scanTasks, scanTask)
+					lock.Unlock()
+					wg.Done()
+				}
 			}
 		}()
 	}
@@ -56,7 +62,8 @@ func PortScan(hosts []string) []ScanTask {
 }
 
 // ScanPort 执行tcp端口扫描
-func ScanPort(addr string) ScanTask {
+func ScanPort(task ScanTask) ScanTask {
+	addr := task.Addr
 	conn, err := requests.DialTcp(addr)
 	defer func() {
 		if conn != nil {
@@ -69,7 +76,7 @@ func ScanPort(addr string) ScanTask {
 		buf := make([]byte, 1024)
 		n, _ := conn.Read(buf)
 		buf = buf[:n]
-		banner := strings.Trim(strings.TrimSpace(string(buf)), "\n")
+		banner := strings.TrimSpace(string(buf))
 		// banner 不为空的情况下，进行指纹识别
 		if n > 0 {
 			server := fingerprint.ParseBanner(buf)
@@ -78,21 +85,25 @@ func ScanPort(addr string) ScanTask {
 					"server": server,
 					"target": addr,
 				}).Info("Port check success")
+				task.Banner = banner
+				task.Server = server
 				return ScanTask{Addr: addr, Banner: banner, Server: server}
 			} else {
 				logrus.WithFields(logrus.Fields{
 					"banner": banner,
 					"target": addr,
 				}).Info("Port check success, but can't parse the banner")
-				return ScanTask{Addr: addr, Banner: banner}
+				task.Banner = banner
+				return task
 			}
 		} else {
 			logrus.WithFields(logrus.Fields{
 				"target": addr,
 			}).Debug("Port check success, but banner is empty")
-			return ScanTask{Addr: addr}
+			return task
 		}
 
 	}
+
 	return ScanTask{}
 }

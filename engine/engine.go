@@ -26,6 +26,6 @@ func Scan() {
 	TaskList := module.PortScan(hosts)
 
 	// 地址服务扫描
-	module.AddrScan(TaskList)
+	module.ServerScan(TaskList)
 
 }
