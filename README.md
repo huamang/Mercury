@@ -50,7 +50,7 @@ OPTIONS:
    --help, -h                show help
 ```
 
-![image-20230507221531214](https://tuchuang.huamang.xyz/img/image-20230507221531214.png)
+![image-20230509140744702](https://tuchuang.huamang.xyz/img/image-20230509140744702.png)
 
 
 
